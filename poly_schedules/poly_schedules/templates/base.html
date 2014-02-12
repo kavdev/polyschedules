@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load dajaxice_templatetags %}
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="content-language" content="en" />
+        <meta name="author" content="Alex Kavanaugh, Chris Opperwall, Chase Kragenbrink, Katie Keim, Calvin Elizan, Jarred Stelfox" />
+        <meta name="Keywords" content="Cal Poly Scheduler Schedules Tool San Luis Opispo" />
+        <meta name="Description" content="View schedules and set preferences for upcoming terms." />
+
+        <link href="{{STATIC_URL}}css/base.css" rel="stylesheet" type="text/css" />
+        {% dajaxice_js_import %}
+        <script type="text/javascript" src="{{STATIC_URL}}js/jquery.dajax.core.js"></script>
+         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        {% block more_head %}{% endblock %}
+        <title>Poly Schedules{% block subtitle %}{% endblock %}</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            IT WORKS!!
+        </div>
+    </body>
+</html>
