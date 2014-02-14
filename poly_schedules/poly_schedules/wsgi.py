@@ -44,7 +44,7 @@ sys.path.append(filepath.ancestor(2))
 sys.path.append(filepath.ancestor(2).child(project_dir))
 
 # Set manually in environment
-# os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
+#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
 
 # Activate the virtual env
 activate_env = virtualenv_dir.child(site_dir, "bin", "activate_this.py")
