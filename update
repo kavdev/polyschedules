@@ -1,0 +1,14 @@
+# Activate the environment
+workon schedules.kavanaughdevelopment.com
+
+# Pull incoming changesets
+sudo -u schedules hg pull
+sudo -u schedules hg update --clean
+
+# Collect static files
+sudo -u schedules python poly_schedules/poly_schedules/manage.py collectstatic
+
+# Restart services
+sudo service memcached restart
+#sudo service nginx restart
+sudo touch poly_scedules/conf/uwsgi.ini
