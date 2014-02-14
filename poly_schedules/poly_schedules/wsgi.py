@@ -32,6 +32,7 @@ source_dir = Path(get_env_variable('PROJECT_HOME'))
 virtualenv_dir = Path(get_env_variable('WORKON_HOME'))
 
 filepath = Path(__file__).absolute()
+site_dir = filepath.ancestor(4).components()[-1]
 repo_dir = filepath.ancestor(3).components()[-1]
 project_dir = filepath.ancestor(2).components()[-1]
 
@@ -46,7 +47,7 @@ sys.path.append(filepath.ancestor(2).child(project_dir))
 # os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
 
 # Activate the virtual env
-activate_env = virtualenv_dir.child(repo_dir, "bin", "activate_this.py")
+activate_env = virtualenv_dir.child(site_dir, "bin", "activate_this.py")
 execfile(activate_env, dict(__file__=activate_env))
 
 #from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
