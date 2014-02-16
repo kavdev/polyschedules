@@ -6,6 +6,8 @@
 
 """
 
+import datetime
+
 from django.conf import settings
 from django.db.models import Model, ForeignKey, ManyToManyField, CharField, IntegerField, BooleanField
 
@@ -30,7 +32,7 @@ class Location(Model):
     room_number = CharField(max_length=4)
     has_equipment = IntegerField()
     capacity = IntegerField()
-    avaialability = ManyToManyField('Day')
+    availability = ManyToManyField('Day')
 
 
 class Section(Model):
@@ -56,11 +58,46 @@ class Day(Model):
 class Term(Model):
 
     SEASONS = ['Fall', 'Winter', 'Spring', 'Summer']
-    SEASON_CHOICES = [(SEASONS.index(day), day) for day in SEASONS]
+    SEASON_CHOICES = [(SEASONS.index(season), season) for season in SEASONS]
 
     season_index = IntegerField(choices=SEASON_CHOICES)
     year = IntegerField()
-    schedule = ForeignKey(Schedule)
-    available_sections = ManyToManyField(Section)
-    preferences_locked = BooleanField()
-    votes_locked = BooleanField()
+    schedule = ForeignKey(Schedule, null=True, blank=True)
+    available_sections = ManyToManyField(Section, blank=True)
+    preferences_locked = BooleanField(default=False)
+    votes_locked = BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.SEASONS[self.season_index] + " " + str(self.year)
+
+    def get_current_term(self):
+        today = datetime.date.today()
+
+        # Convert date to month and day as integer (md), e.g. 4/21 = 421, 11/17 = 1117, etc.
+        # See: http://stackoverflow.com/questions/16139306/determine-season-given-timestamp-in-python-using-datetime
+        year = today.year
+        month = today.month * 100
+        day = today.day
+        monthday = month + day
+
+        if monthday >= 921 and monthday <= 1231:
+            season = self.SEASONS.index("Fall")
+        elif monthday >= 11 and monthday <= 320:
+            season = self.SEASONS.index("Winter")
+        elif monthday >= 321 and monthday <= 620:
+            season = self.SEASONS.index("Spring")
+        elif monthday >= 621 and monthday <= 920:
+            season = self.SEASONS.index("Summer")
+        else:
+            season = None
+
+        if season:
+            try:
+                return Term.objects.get(season_index=season, year=year)
+            except Term.DoesNotExist:
+                pass
+
+        return None
+
+    class Meta:
+        unique_together = ("season_index", "year")

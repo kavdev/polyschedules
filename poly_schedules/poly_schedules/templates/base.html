@@ -4,20 +4,55 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta http-equiv="content-language" content="en" />
+        <meta charset="utf-8">
         <meta name="author" content="Alex Kavanaugh, Chris Opperwall, Chase Kragenbrink, Katie Keim, Calvin Elizan, Jarred Stelfox" />
         <meta name="Keywords" content="Cal Poly Scheduler Schedules Tool San Luis Opispo" />
         <meta name="Description" content="View schedules and set preferences for upcoming terms." />
 
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
         <link href="{{STATIC_URL}}css/base.css" rel="stylesheet" type="text/css" />
-        {% dajaxice_js_import %}
-        <script type="text/javascript" src="{{STATIC_URL}}js/jquery.dajax.core.js"></script>
-         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        {% block more_head %}{% endblock %}
+        {% block extended_head %}{% endblock %}
         <title>Poly Schedules{% block subtitle %}{% endblock %}</title>
     </head>
     <body>
-        <div id="wrapper">
-            IT WORKS!!
+        <div id="container">
+            <div class="row clearfix" id="titlebar">
+                <div class="col-xs-4 column" id="title_left" align="left">
+                    <a href="{% url 'home' %}">Poly Schedules</a>
+                </div>
+                <div class="col-xs-4 column" id="title_center" align="center">
+                    {{request.term_form.as_p}}
+                </div>
+                <div class="col-xs-4 column" id="title_right" align="right">
+                    {% if request.user.is_authenticated %} {# User is logged in - display user information. #}
+                        You are logged in as {{ request.user.get_full_name }}. (<a href="{% url 'logout' %}">Logout</a>)
+                    {% else %} {# User is not logged in - display log in link. #}
+                        You are not currently logged in. (<a href="{% url 'login' %}">Login</a>)
+                    {% endif %}
+                </div>
+            </div>
+            {% if request.user.is_authenticated %}
+            <div class="row_clearfix" id="menubar">
+                <div class="col-xs-12 column" align="right">
+                    {% if request.user.is_superuser or request.user.is_instructor %}
+                    <a href=''>Manage Preferences</a>
+                    {% endif %}
+                    {% if request.user.is_superuser or not request.user.is_instructor %}
+                    <a href=''>Vote for Courses</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="row clearfix" id="content">
+                {% block content %}{% endblock %}
+            </div>
         </div>
+        
+        {# ##### Javascript Imports ##### #}
+        {% dajaxice_js_import %}
+        <script type="text/javascript" src="{{STATIC_URL}}js/jquery.dajax.core.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        {% block extended_scripts %}{% endblock %}
     </body>
 </html>

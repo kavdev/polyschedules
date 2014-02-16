@@ -8,8 +8,8 @@
 
 import re
 
-from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
-from django.db.models import ManyToManyField, CharField, EmailField, BooleanField, PositiveIntegerField
+from django.contrib.auth.models import AbstractUser
+from django.db.models import ManyToManyField, BooleanField, PositiveIntegerField
 from django.core.mail import send_mail
 
 from votes.models import Vote
@@ -17,33 +17,23 @@ from preferences.models import CoursePreference
 from schedules.models import Day
 
 
-class PolySchedulesUser(AbstractBaseUser):
+class PolySchedulesUser(AbstractUser):
     """Poly Schedules User Model."""
-
-    # General Fields
-    username = CharField(max_length=14, unique=True, verbose_name=u'Username')
-    first_name = CharField(max_length=30, blank=True, verbose_name=u'First Name')
-    last_name = CharField(max_length=30, blank=True, verbose_name=u'Last Name')
-    email = EmailField(blank=True, verbose_name=u'Email Address')
 
     # Instructor Fields
     wtu = PositiveIntegerField(default=0)
     time_preferences = ManyToManyField(Day)
     course_preferences = ManyToManyField(CoursePreference)
     preferences_locked = BooleanField(default=False)
-    is_active = BooleanField(default=True)
+    is_active_instructor = BooleanField(default=True)
 
     # Student Fields
     votes = ManyToManyField(Vote)
-
-    USERNAME_FIELD = 'username'
-    objects = UserManager()
 
     #
     # A set of flags for each user that decides what the user can and cannot see.
     #
     is_instructor = BooleanField(default=False)  # Instructors
-    is_developer = BooleanField(default=False)  # Full Access
 
     class Meta:
         verbose_name = u'Poly Schedules User'
