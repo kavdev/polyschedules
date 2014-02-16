@@ -1,0 +1,61 @@
+@import url(http://fonts.googleapis.com/css?family=Lobster+Two:700italic);
+@import url(http://fonts.googleapis.com/css?family=Varela+Round);
+
+html, body {
+    height: 100%;
+    background-color: rgb(246, 246, 246);
+    font-family: 'Varela Round', sans-serif;
+}
+
+#titlebar, #menubar {
+    padding: 0 45px;
+    height: 40px;
+}
+
+#titlebar {
+    background-color: rgb(3, 98, 40);
+}
+
+#title_left a {
+    color: white;
+    font-size: 26px;
+    font-family: 'Lobster Two', cursive;
+}
+
+#title_center select {
+    width: 50%;
+    margin-top: 7px;
+}
+
+#title_right {
+    color: white;
+    font-size: 16px;
+    margin-top: 7px;
+}
+
+#title_right a {
+    color: white;
+}
+
+#menubar {
+    background-color: rgb(200, 200, 200);
+}
+
+#menubar > div {
+    padding-top: 8px;
+    padding-right: 0;
+}
+
+#menubar a {
+    color: rgb(50, 50, 50);
+    font-size: 16px;
+    padding-left: 15px;
+}
+
+#auth_container {
+    margin-top: 200px;
+}
+
+#login_form {
+    margin-top: 50px;
+}
