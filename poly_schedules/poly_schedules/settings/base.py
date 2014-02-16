@@ -23,7 +23,6 @@ def get_env_variable(name):
         error_msg = "The %s environment variable is not set!" % name
         raise ImproperlyConfigured(error_msg)
 
-
 # ======================================================================================================== #
 #                                         General Management                                               #
 # ======================================================================================================== #
@@ -112,7 +111,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_LDAP_SERVER_URI = 'ldap://cp-calpoly.edu:3268'
+AUTH_LDAP_SERVER_URI = 'ldap://cp-calpoly.edu'
+
+AUTH_LDAP_BIND_DN = get_env_variable('POLY_SCHEDULES_LDAP_USER_DN')
+AUTH_LDAP_BIND_PASSWORD = get_env_variable('POLY_SCHEDULES_LDAP_PASSWORD')
 
 AUTH_LDAP_USER_SEARCH = LDAPSearch('OU=Depts,DC=CP-Calpoly,DC=edu', ldap.SCOPE_SUBTREE, '(&(objectClass=user)(sAMAccountName=%(user)s))')
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch('OU=Depts,DC=CP-Calpoly,DC=edu', ldap.SCOPE_SUBTREE, '(objectClass=group)')
@@ -127,13 +129,12 @@ AUTH_LDAP_USER_ATTR_MAP = {
 
 AUTH_USER_MODEL = 'core.PolySchedulesUser'
 
+#
+# For the scope of this project, only CSC instructors are instructors.
+# When the scope expands, more groups can be added.
+#
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-#     'is_ral': 'CN=UH-RAL,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
-#     'is_ral_manager': 'CN=UH-RAL-Managers,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
-#     'is_ra': 'CN=UH-RA,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
-#     'is_csd': 'CN=UH-CSD,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
-#     'is_fd-staff': 'CN=UH-FD-Staff,OU=Front Desk,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
-#     'is_developer': 'CN=UH-RN-DevTeam,OU=ResNet,OU=Residential Life,OU=Groups,OU=Delegated,OU=UH,OU=Depts,DC=CP-Calpoly,DC=edu',
+     'is_instructor': 'CN=CSC,OU=Depts,DC=CP-Calpoly,DC=edu',
 }
 
 # ======================================================================================================== #
@@ -213,6 +214,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'poly_schedules.core.middleware.TermMiddleware',
 #    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
 #    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
 )
@@ -222,14 +224,15 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
 #   'django.contrib.messages',
+    'django.contrib.admin',
     'django.contrib.staticfiles',
-#    'raven.contrib.django.raven_compat',
+    'raven.contrib.django.raven_compat',
     'dajaxice',
     'poly_schedules.core',
     'poly_schedules.schedules',
     'poly_schedules.preferences',
     'poly_schedules.votes',
-    'south',
+    #'south',
 )
 
 # ======================================================================================================== #
@@ -282,6 +285,11 @@ LOGGING = {
         'dajaxice': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'django_auth_ldap': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }

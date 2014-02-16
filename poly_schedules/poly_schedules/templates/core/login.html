@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}
+ | Authentication
+{% endblock %}
+
+{% block content %}
+<div class="col-xs-12 column" align="center" id="auth_container">
+    <div id="login_logo">
+        <a href = "http://www.calpoly.edu" title="Cal Poly San Luis Obispo">
+            <img src="https://my.calpoly.edu/cas/media/skins/sage/images/CP_Logo_Transparent.png" height="75px" alt="Cal Poly San Luis Obispo" />
+        </a>
+    </div>
+    <form method="post" action="{% url 'login' %}" id="login_form">
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+        <p>
+            <input type="submit" value="Log In" />
+        </p>
+        {% csrf_token %}
+    </form>
+</div>
+{% endblock %}

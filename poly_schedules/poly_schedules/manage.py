@@ -24,6 +24,7 @@ def activate_env():
 
     filepath = Path(__file__).absolute()
     site_dir = filepath.ancestor(4).components()[-1]
+    repo_dir = filepath.ancestor(3).components()[-1]
 
     # Add the app's directory to the PYTHONPATH
     sys.path.append(filepath.ancestor(2))
@@ -32,8 +33,13 @@ def activate_env():
     # Set manually in environment
     #os.environ['DJANGO_SETTINGS_MODULE'] = 'settings.production'
 
+    if os.environ['DJANGO_SETTINGS_MODULE'] == 'settings.production':
+        bin_parent = site_dir
+    else:
+        bin_parent = repo_dir
+
     # Activate the virtual env
-    activate_env = virtualenv_dir.child(site_dir, "bin", "activate_this.py")
+    activate_env = virtualenv_dir.child(bin_parent, "bin", "activate_this.py")
     execfile(activate_env, dict(__file__=activate_env))
 
 if __name__ == "__main__":
