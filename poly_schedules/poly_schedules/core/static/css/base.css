@@ -9,7 +9,7 @@ html, body {
 
 #titlebar, #menubar {
     padding: 0 45px;
-    height: 40px;
+    min-height: 40px;
 }
 
 #titlebar {
