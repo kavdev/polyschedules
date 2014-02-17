@@ -19,12 +19,12 @@ from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 admin.autodiscover()
 dajaxice_autodiscover()
 
-from core.views import LoginView  # , handler500
+from core.views import LoginView, handler500
 
 logger = logging.getLogger(__name__)
 instructor_required = user_passes_test(lambda user: user.is_superuser or user.is_instructor)
 
-#handler500 = handler500
+handler500 = handler500
 
 # Core
 urlpatterns = patterns('core.views',
