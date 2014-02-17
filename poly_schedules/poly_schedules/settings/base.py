@@ -111,7 +111,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-AUTH_LDAP_SERVER_URI = 'ldaps://129.65.69.11'
+AUTH_LDAP_SERVER_URI = 'ldaps://cp-calpoly.edu'
 
 AUTH_LDAP_BIND_DN = get_env_variable('POLY_SCHEDULES_LDAP_USER_DN')
 AUTH_LDAP_BIND_PASSWORD = get_env_variable('POLY_SCHEDULES_LDAP_PASSWORD')

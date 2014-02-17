@@ -45,21 +45,6 @@ class LoginView(FormView):
 
         return super(LoginView, self).form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super(LoginView, self).get_context_data(**kwargs)
-        context['server_down'] = False
-
-        # Make sure the auth server is available
-        server = settings.AUTH_LDAP_SERVER_URI
-        con = ldap.initialize(server)
-
-        try:
-            con.simple_bind()
-        except ldap.SERVER_DOWN:
-            context['server_down'] = True
-
-        return context
-
 
 def logout(request):
     """Logs the current user out."""
