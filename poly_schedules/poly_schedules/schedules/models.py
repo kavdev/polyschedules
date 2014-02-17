@@ -19,6 +19,7 @@ from .fields import BooleanListField
 
 class Course(Model):
     PROXIMITIES = ['DIRECTLY_AFTER', 'SAME_DAY', 'DIFFERENT_DAY']
+    PROXIMITY_CHOICES = [(PROXIMITIES.index(proximity), proximity) for proximity in PROXIMITIES]
 
     prefix = CharField(max_length=4)
     number = PositiveSmallIntegerField()
@@ -31,7 +32,7 @@ class Course(Model):
     has_lab = BooleanField()
     lab_requires_equiment = BooleanField(default=False)
     lab_length = DecimalField(max_digits=3, decimal_places=2, verbose_name='Lab Length (Hours)')
-    lab_time_proximity = PositiveSmallIntegerField(default=0)
+    lab_time_proximity = PositiveSmallIntegerField(default=0, choices=PROXIMITY_CHOICES)
 
     def __unicode__(self):
         return self.prefix + " " + str(self.number)
