@@ -9,31 +9,27 @@
 import re
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import ManyToManyField, BooleanField, PositiveIntegerField
-from django.core.mail import send_mail
+from django.db.models.fields import BooleanField, PositiveIntegerField
+from django.db.models.fields.related import ForeignKey, ManyToManyField
 
-from votes.models import Vote
 from preferences.models import CoursePreference
-from schedules.models import Day
+from schedules.models import Week
 
 
 class PolySchedulesUser(AbstractUser):
     """Poly Schedules User Model."""
 
-    # Instructor Fields
-    wtu = PositiveIntegerField(default=0)
-    time_preferences = ManyToManyField(Day)
-    course_preferences = ManyToManyField(CoursePreference)
+    # Special Instructor Fields
+    max_wtu = PositiveIntegerField(default=8)
+    course_preferences = ManyToManyField(CoursePreference, blank=True)
+    time_preference = ForeignKey(Week, null=True, blank=True)
     preferences_locked = BooleanField(default=False)
     is_active_instructor = BooleanField(default=True)
 
-    # Student Fields
-    votes = ManyToManyField(Vote)
-
     #
-    # A set of flags for each user that decides what the user can and cannot see.
+    # A set of flags for each user that decides what s/he can and cannot see.
     #
-    is_instructor = BooleanField(default=False)  # Instructors
+    is_instructor = BooleanField(default=False)
 
     class Meta:
         verbose_name = u'Poly Schedules User'
@@ -49,8 +45,3 @@ class PolySchedulesUser(AbstractUser):
         """Returns the username with the possible '-admin' removed."""
 
         return re.sub(r'-admin', '', self.username)
-
-    def email_user(self, subject, message, from_email=None):
-        """Sends an email to this User."""
-
-        send_mail(subject, message, from_email, [self.email])

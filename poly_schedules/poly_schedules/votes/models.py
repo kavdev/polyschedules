@@ -16,3 +16,6 @@ class Vote(Model):
     student = ForeignKey(settings.AUTH_USER_MODEL)
     course = ForeignKey(Course)
     term = ForeignKey(Term)
+
+    def __unicode__(self):
+        return self.student + " - " + self.course + " " + self.term

@@ -12,6 +12,10 @@
         </a>
     </div>
     <form method="post" action="{% url 'login' %}" id="login_form">
+        {% if server_down %}
+        <div style="margin-top: -10px; padding-bottom: 20px;">Error: Could not establish a connection to the LDAP authentication source.<br />
+            Attempts to authenticate via LDAP will fail.</div>
+        {% endif %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>

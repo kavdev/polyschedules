@@ -8,11 +8,9 @@
 
 from django.contrib import admin
 
-from .models import Course, Location, Section, Schedule, Day, Term
+from .models import Course, Location, Section, Term
 
 admin.site.register(Course)
 admin.site.register(Location)
 admin.site.register(Section)
-admin.site.register(Schedule)
-admin.site.register(Day)
 admin.site.register(Term)

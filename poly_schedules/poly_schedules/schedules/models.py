@@ -9,50 +9,98 @@
 import datetime
 
 from django.conf import settings
-from django.db.models import Model, ForeignKey, ManyToManyField, CharField, IntegerField, BooleanField
+from django.db.models import Model
+from django.db.models.fields import PositiveSmallIntegerField, DecimalField, DateField, TimeField, CharField, IntegerField, BooleanField
+from django.db.models.fields.related import ForeignKey, ManyToManyField
+
 
 from .fields import BooleanListField
 
 
 class Course(Model):
-    PROXIMITIES = ['After', 'Same', 'Different']
+    PROXIMITIES = ['DIRECTLY_AFTER', 'SAME_DAY', 'DIFFERENT_DAY']
 
     prefix = CharField(max_length=4)
-    number = IntegerField()
+    number = PositiveSmallIntegerField()
     title = CharField(max_length=60)
-    units = IntegerField()
+    units = PositiveSmallIntegerField(default=4)
+    wtu = PositiveSmallIntegerField(default=5)
+    requires_equipment = BooleanField(default=False)
+
+    # Lab Fields
     has_lab = BooleanField()
-    lab_length = IntegerField()
-    lab_time_proximity = IntegerField()
+    lab_requires_equiment = BooleanField(default=False)
+    lab_length = DecimalField(max_digits=3, decimal_places=2, verbose_name='Lab Length (Hours)')
+    lab_time_proximity = PositiveSmallIntegerField(default=0)
+
+    def __unicode__(self):
+        return self.prefix + " " + str(self.number)
+
+    class Meta:
+        unique_together = ("prefix", "number")
 
 
 class Location(Model):
     building = CharField(max_length=60)
     building_number = CharField(max_length=4)
     room_number = CharField(max_length=4)
-    has_equipment = IntegerField()
-    capacity = IntegerField()
-    availability = ManyToManyField('Day')
+    has_equipment = BooleanField(default=False)
+    capacity = PositiveSmallIntegerField()
+    availability = ForeignKey('Week', unique=True)
+
+    def __unicode__(self):
+        return self.building + " (" + self.building_number + ") " + self.room_number
+
+    class Meta:
+        unique_together = ("building_number", "room_number")
 
 
 class Section(Model):
     course = ForeignKey(Course)
-    number = IntegerField()
+    number = PositiveSmallIntegerField()
     instructor = ForeignKey(settings.AUTH_USER_MODEL)
     location = ForeignKey(Location)
-    times = ManyToManyField('Day')
+    times = ManyToManyField('SectionTime')
+
+    # The associated lab, if it exists
+    associated_lab = ForeignKey('self', null=True, blank=True)
+
+    def __unicode__(self):
+        return self.course + " - " + str(self.number)
+
+    class Meta:
+        unique_together = ("course", "number")
 
 
-class Schedule(Model):
-    sections = ManyToManyField(Section)
+class SectionTime(Model):
+
+    TIME_PATTERNS = ['MWF', 'MW', 'MF', 'WF', 'TH', 'MTWH', 'MTWF']
+    TIME_PATTERN_CHOICES = [(TIME_PATTERNS.index(time_pattern), time_pattern) for time_pattern in TIME_PATTERNS]
+
+    time_pattern = IntegerField(choices=TIME_PATTERN_CHOICES)
+    start_time = TimeField()
+    length = DecimalField(max_digits=3, decimal_places=2, verbose_name='Length (Hours)')
+
+    def __unicode__(self):
+        length_digits = self.length.as_tuple().digits
+        length_hours = length_digits[0]
+        length_minutes = (60 * ((length_digits[1] * 10) + length_digits[2])) / 100  # Integer math gets nice minute numbers
+
+        end_time = self.start_time + datetime.timedelta(hours=length_hours, minutes=length_minutes)
+
+        return self.TIME_PATTERNS[self.time_pattern] + " " + str(self.start_time) + " - " + str(end_time)
 
 
-class Day(Model):
+class Week(Model):
+    """A week. Each day has a boolean list of 24 hours."""
 
-    DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-    day_index = IntegerField()
-    availability = BooleanListField()
+    monday = BooleanListField()
+    tuesday = BooleanListField()
+    wednesday = BooleanListField()
+    thursday = BooleanListField()
+    friday = BooleanListField()
+    saturday = BooleanListField()
+    sunday = BooleanListField()
 
 
 class Term(Model):
@@ -61,14 +109,31 @@ class Term(Model):
     SEASON_CHOICES = [(SEASONS.index(season), season) for season in SEASONS]
 
     season_index = IntegerField(choices=SEASON_CHOICES)
-    year = IntegerField()
-    schedule = ForeignKey(Schedule, null=True, blank=True)
-    available_sections = ManyToManyField(Section, blank=True)
-    preferences_locked = BooleanField(default=False)
-    votes_locked = BooleanField(default=False)
+    year = PositiveSmallIntegerField()
+    schedule = ManyToManyField(Section, blank=True)
+    preferences_lock_date = DateField()
+    votes_lock_date = DateField()
 
     def __unicode__(self):
         return self.SEASONS[self.season_index] + " " + str(self.year)
+
+    @property
+    def preferences_locked(self):
+        today = datetime.date.today()
+
+        if today >= self.preferences_lock_date:
+            return True
+
+        return False
+
+    @property
+    def votes_locked(self):
+        today = datetime.date.today()
+
+        if today >= self.votes_lock_date:
+            return True
+
+        return False
 
     def get_current_term(self):
         today = datetime.date.today()
