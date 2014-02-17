@@ -135,7 +135,7 @@ class Term(Model):
 
         return False
 
-    def get_current_term(self):
+    def get_or_create_current_term(self):
         today = datetime.date.today()
 
         # Convert date to month and day as integer (md), e.g. 4/21 = 421, 11/17 = 1117, etc.
@@ -147,22 +147,32 @@ class Term(Model):
 
         if monthday >= 921 and monthday <= 1231:
             season = self.SEASONS.index("Fall")
+            lock_date = datetime.date(year, 11, 1)
         elif monthday >= 11 and monthday <= 320:
             season = self.SEASONS.index("Winter")
+            lock_date = datetime.date(year, 2, 1)
         elif monthday >= 321 and monthday <= 620:
             season = self.SEASONS.index("Spring")
+            lock_date = datetime.date(year, 5, 1)
         elif monthday >= 621 and monthday <= 920:
             season = self.SEASONS.index("Summer")
+            lock_date = datetime.date(year, 8, 1)
         else:
             season = None
+            lock_date = None
 
         if season:
             try:
-                return Term.objects.get(season_index=season, year=year)
+                term = Term.objects.get(season_index=season, year=year)
             except Term.DoesNotExist:
-                pass
+                new_term = Term(season_index=season, year=year)
+                new_term.votes_lock_date = lock_date
+                new_term.preferences_lock_date = lock_date
+                new_term.save()
 
-        return None
+                term = new_term
+
+        return term
 
     class Meta:
         unique_together = ("season_index", "year")

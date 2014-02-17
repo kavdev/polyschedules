@@ -21,4 +21,5 @@ class TermDropdownForm(Form):
 
         term_instance = Term()
 
-        self.fields["term"].initial = term_instance.get_current_term().id
+        term = term_instance.get_or_create_current_term()
+        self.fields["term"].initial = term.id

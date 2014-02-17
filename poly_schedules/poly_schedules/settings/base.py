@@ -215,8 +215,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'poly_schedules.core.middleware.TermMiddleware',
-#    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
-#    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
+    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
 )
 
 INSTALLED_APPS = (
@@ -240,7 +240,7 @@ INSTALLED_APPS = (
 # ======================================================================================================== #
 
 RAVEN_CONFIG = {
-#     'dsn': get_env_variable('POLY_SCHEDULES_SENTRY_DSN'),
+     'dsn': get_env_variable('POLY_SCHEDULES_SENTRY_DSN'),
 }
 
 LOGGING = {
@@ -248,7 +248,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'INFO',
-        'handlers': ['console'],
+        'handlers': ['sentry'],
     },
     'formatters': {
         'verbose': {
@@ -256,10 +256,10 @@ LOGGING = {
         },
     },
     'handlers': {
-#         'sentry': {
-#             'level': 'INFO',
-#             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-#         },
+        'sentry': {
+            'level': 'INFO',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -272,16 +272,16 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
-#         'raven': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#             'propagate': False,
-#         },
-#         'sentry.errors': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#             'propagate': False,
-#         },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'dajaxice': {
             'handlers': ['console'],
             'level': 'INFO',
@@ -289,7 +289,7 @@ LOGGING = {
         },
         'django_auth_ldap': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     }
