@@ -21,7 +21,7 @@ class TermMiddleware(object):
 
         if not term:
             term_instance = Term()
-            term = term_instance.get_current_term()
+            term = term_instance.get_or_create_current_term()
 
         term_form = TermDropdownForm()
 
