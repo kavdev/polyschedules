@@ -32,8 +32,8 @@ class PolySchedulesUser(AbstractUser):
     is_instructor = BooleanField(default=False)
 
     class Meta:
-        verbose_name = u'Poly Schedules User'
-        verbose_name_plural = u'Poly Schedules Users'
+        verbose_name = u'PolySchedules User'
+        verbose_name_plural = u'PolySchedules Users'
 
     def get_full_name(self):
         """Returns the first_name plus the last_name with a space in between and the possible '- ADMIN' removed."""
