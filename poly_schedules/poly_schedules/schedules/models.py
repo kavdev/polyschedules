@@ -47,7 +47,6 @@ class Location(Model):
     room_number = CharField(max_length=4)
     has_equipment = BooleanField(default=False)
     capacity = PositiveSmallIntegerField()
-    availability = ForeignKey('Week', unique=True)
 
     def __unicode__(self):
         return self.building + " (" + self.building_number + ") " + self.room_number
