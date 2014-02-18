@@ -31,7 +31,7 @@ class Course(Model):
     # Lab Fields
     has_lab = BooleanField()
     lab_requires_equiment = BooleanField(default=False)
-    lab_length = DecimalField(max_digits=3, decimal_places=2, verbose_name='Lab Length (Hours)')
+    lab_length = DecimalField(max_digits=3, decimal_places=2, default=0, verbose_name='Lab Length (Hours)')
     lab_time_proximity = PositiveSmallIntegerField(default=0, choices=PROXIMITY_CHOICES)
 
     def __unicode__(self):
