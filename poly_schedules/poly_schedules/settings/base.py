@@ -206,6 +206,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
+    'poly_schedules.core.context_processors.term_dropdown',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -214,7 +215,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'poly_schedules.core.middleware.TermMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
 )
