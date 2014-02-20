@@ -8,11 +8,13 @@
 
 import re
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import BooleanField, PositiveIntegerField
 from django.db.models.fields.related import ManyToManyField
 
 from preferences.models import CoursePreference, TimePreference
+from schedules.models import Course, Term, Week
 
 
 class PolySchedulesUser(AbstractUser):
@@ -29,10 +31,6 @@ class PolySchedulesUser(AbstractUser):
     #
     is_instructor = BooleanField(default=False)
 
-    class Meta:
-        verbose_name = u'PolySchedules User'
-        verbose_name_plural = u'PolySchedules Users'
-
     def get_full_name(self):
         """Returns the first_name plus the last_name with a space in between and the possible '- ADMIN' removed."""
 
@@ -43,3 +41,25 @@ class PolySchedulesUser(AbstractUser):
         """Returns the username with the possible '-admin' removed."""
 
         return re.sub(r'-admin', '', self.username)
+
+    def initialize_preferences(self):
+        # Initialize course preferences
+        for course in Course.objects.all():
+            course_pref, created = CoursePreference.objects.get_or_create(term=Term().get_or_create_current_term(), course=course)
+
+            if created:
+                self.course_preferences.add(course_pref)
+                self.save()
+
+        # Initialize time preference
+        time_pref, created = TimePreference.objects.get_or_create(term=Term().get_or_create_current_term())
+
+        if created:
+            time_pref.availability = Week()
+            time_pref.save()
+            self.time_preference.add(time_pref)
+            self.save()
+
+    class Meta:
+        verbose_name = u'PolySchedules User'
+        verbose_name_plural = u'PolySchedules Users'

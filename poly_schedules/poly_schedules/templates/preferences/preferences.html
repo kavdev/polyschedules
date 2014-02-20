@@ -18,16 +18,29 @@
              <table border="1" class="course_preference">
                 <tbody>
                     <tr>
-                        <th scope="col" width="25%">Prefix</th>
-                        <th scope="col" width="25%">Course #</th>
-                        <th scope="col" width="50%">Preference</th>
+                        <th scope="col" width="15%">Prefix</th>
+                        <th scope="col" width="20%">Course #</th>
+                        <th scope="col" width="20%">Not Qualified</th>
+                        <th scope="col" width="45%" style="text-align: center">Don't Prefer ----------- Prefer</th>
                     </tr>
                     {% if course_preference_list %}
                         {% for preference in course_preference_list %}
                         <tr>
                             <td>{{ preference.course.prefix }}</td>
                             <td>{{ preference.course.number }}</td>
-                            <td>{{ preference.preference_form.as_p }}</td>
+                            <td>
+                            {% for radio in preference.preference_form.preference %}
+                                {% if forloop.first %}
+                                <div align="center"><input name="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.name }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }}></div>
+                                </td>
+                                <td>
+                                <div align="center" class="full_width">
+                                {% else %}
+                                <input name="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.name }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }}>
+                                {% endif %}
+                            {% endfor %}
+                            </td>
+                            </div>
                         </tr>
                         {% endfor %}
                     {% else %}
