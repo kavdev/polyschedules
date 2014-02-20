@@ -14,11 +14,9 @@ from preferences.models import CoursePreference
 
 class CoursePreferenceForm(ModelForm):
 
-    model = CoursePreference
-
-    def __init__(self, *args, **kwargs):
-        super(CoursePreferenceForm, self).__init__(*args, **kwargs)
-        self.fields['availability'].widget = RadioSelect
-
     class Meta:
-        fields = ('availability', )
+        model = CoursePreference
+        fields = ('preference', )
+        widgets = {
+            'preference': RadioSelect(),
+        }

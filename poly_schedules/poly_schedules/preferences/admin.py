@@ -8,6 +8,7 @@
 
 from django.contrib import admin
 
-from .models import CoursePreference
+from .models import CoursePreference, TimePreference
 
 admin.site.register(CoursePreference)
+admin.site.register(TimePreference)

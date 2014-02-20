@@ -63,3 +63,7 @@ html, body {
 .centered_content {
     margin-top: 50px;
 }
+
+.course_preference .full_width input[type="radio"] {
+    margin: 4px 5% 0px;
+}

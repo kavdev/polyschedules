@@ -94,13 +94,15 @@ class SectionTime(Model):
 class Week(Model):
     """A week. Each day has a boolean list of 24 hours."""
 
-    monday = BooleanListField()
-    tuesday = BooleanListField()
-    wednesday = BooleanListField()
-    thursday = BooleanListField()
-    friday = BooleanListField()
-    saturday = BooleanListField()
-    sunday = BooleanListField()
+    empty_day = "".join(["0" for x in xrange(24)])
+
+    monday = BooleanListField(default=empty_day)
+    tuesday = BooleanListField(default=empty_day)
+    wednesday = BooleanListField(default=empty_day)
+    thursday = BooleanListField(default=empty_day)
+    friday = BooleanListField(default=empty_day)
+    saturday = BooleanListField(default=empty_day)
+    sunday = BooleanListField(default=empty_day)
 
 
 class Schedule(Model):
@@ -117,7 +119,7 @@ class Term(Model):
 
     season_index = IntegerField(choices=SEASON_CHOICES)
     year = PositiveSmallIntegerField()
-    schedule = ForeignKey(Schedule)
+    schedule = ForeignKey(Schedule, null=True, blank=True)
     preferences_lock_date = DateField()
     votes_lock_date = DateField()
 

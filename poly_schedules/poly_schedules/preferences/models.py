@@ -20,7 +20,7 @@ class CoursePreference(Model):
 
     term = ForeignKey(Term)
     course = ForeignKey(Course)
-    preference = PositiveSmallIntegerField(choices=PREFERENCE_CHOICES)
+    preference = PositiveSmallIntegerField(default=0, verbose_name='', choices=PREFERENCE_CHOICES)
     locked = BooleanField(default=False)
 
 
