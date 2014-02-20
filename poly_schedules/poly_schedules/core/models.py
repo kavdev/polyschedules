@@ -10,10 +10,9 @@ import re
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import BooleanField, PositiveIntegerField
-from django.db.models.fields.related import ForeignKey, ManyToManyField
+from django.db.models.fields.related import ManyToManyField
 
-from preferences.models import CoursePreference
-from schedules.models import Week
+from preferences.models import CoursePreference, TimePreference
 
 
 class PolySchedulesUser(AbstractUser):
@@ -22,8 +21,7 @@ class PolySchedulesUser(AbstractUser):
     # Special Instructor Fields
     max_wtu = PositiveIntegerField(default=8)
     course_preferences = ManyToManyField(CoursePreference, blank=True)
-    time_preference = ForeignKey(Week, null=True, blank=True)
-    preferences_locked = BooleanField(default=False)
+    time_preference = ManyToManyField(TimePreference, blank=True)
     is_active_instructor = BooleanField(default=True)
 
     #

@@ -20,6 +20,7 @@ admin.autodiscover()
 dajaxice_autodiscover()
 
 from core.views import LoginView, handler500
+from preferences.views import PreferencesView
 
 logger = logging.getLogger(__name__)
 instructor_required = user_passes_test(lambda user: user.is_superuser or user.is_instructor)
@@ -33,6 +34,11 @@ urlpatterns = patterns('core.views',
     url(r'^favicon\.ico$', RedirectView.as_view(url='https://webresource.its.calpoly.edu/cpwebtemplate/5.0.1/common/images_html/favicon.ico'), name='favicon'),
     url(r'^login/$', LoginView.as_view(), name='login'),
     url(r'^logout/$', 'logout', name='logout'),
+)
+
+# Instructor Preferences
+urlpatterns += patterns('',
+    url(r'^preferences/$', PreferencesView.as_view(), name='login'),
 )
 
 # Dajaxice

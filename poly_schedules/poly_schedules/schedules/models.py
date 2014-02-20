@@ -103,6 +103,13 @@ class Week(Model):
     sunday = BooleanListField()
 
 
+class Schedule(Model):
+
+    sections = ManyToManyField(Section, blank=True)
+    start_time = TimeField(default=datetime.time(7))
+    end_time = TimeField(default=datetime.time(22))
+
+
 class Term(Model):
 
     SEASONS = ['Fall', 'Winter', 'Spring', 'Summer']
@@ -110,7 +117,7 @@ class Term(Model):
 
     season_index = IntegerField(choices=SEASON_CHOICES)
     year = PositiveSmallIntegerField()
-    schedule = ManyToManyField(Section, blank=True)
+    schedule = ForeignKey(Schedule)
     preferences_lock_date = DateField()
     votes_lock_date = DateField()
 

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}
+ | Instructor Preferences
+{% endblock %}
+
+{% block content %}
+<div class="col-xs-12 column">
+    <div class="row_clearfix">
+        <p>Use the following forms to provide preference information to the scheduling algorithm. Your preferences will be taken into account when generating schedules, but there is no guarantee they won't be overridden.</p>
+    </div>
+    <div class="row_clearfix">
+        <div class="col-xs-6 column">
+            <span>Time Preference</span>
+        </div>
+        <div class="col-xs-6 column">
+            <span>Course Preferences</span>
+             <table border="1" class="course_preference">
+                <tbody>
+                    <tr>
+                        <th scope="col" width="25%">Prefix</th>
+                        <th scope="col" width="25%">Course #</th>
+                        <th scope="col" width="50%">Preference</th>
+                    </tr>
+                    {% if course_preference_list %}
+                        {% for preference in course_preference_list %}
+                        <tr>
+                            <td>{{ preference.course.prefix }}</td>
+                            <td>{{ preference.course.number }}</td>
+                            <td>{{ preference.preference_form.as_p }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

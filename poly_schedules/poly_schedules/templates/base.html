@@ -21,7 +21,7 @@
                     <a href="{% url 'home' %}">Poly Schedules</a>
                 </div>
                 <div class="col-xs-4 column" id="title_center" align="center">
-                    {{request.term_form.as_p}}
+                    {{ term_form.as_p }}
                 </div>
                 <div class="col-xs-4 column" id="title_right" align="right">
                     {% if request.user.is_authenticated %} {# User is logged in - display user information. #}
