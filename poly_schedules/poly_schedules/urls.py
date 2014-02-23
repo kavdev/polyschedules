@@ -38,7 +38,7 @@ urlpatterns = patterns('core.views',
 
 # Instructor Preferences
 urlpatterns += patterns('',
-    url(r'^preferences/$', PreferencesView.as_view(), name='login'),
+    url(r'^preferences/$', login_required(instructor_required(PreferencesView.as_view())), name='preferences'),
 )
 
 # Dajaxice

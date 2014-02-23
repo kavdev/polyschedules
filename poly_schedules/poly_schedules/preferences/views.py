@@ -35,7 +35,7 @@ class PreferencesView(TemplateView):
 
             list_object = {}
             list_object['course'] = course
-            list_object['preference_form'] = CoursePreferenceForm(instance=preference, auto_id=True)#, auto_id=str(course.id))
+            list_object['preference_form'] = CoursePreferenceForm(instance=preference)
 
             course_preference_list.append(list_object)
 
