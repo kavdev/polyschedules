@@ -35,7 +35,7 @@
             <div class="row_clearfix" id="menubar">
                 <div class="col-xs-12 column" align="right">
                     {% if request.user.is_superuser or request.user.is_instructor %}
-                    <a href=''>Manage Preferences</a>
+                    <a href='{% url 'preferences' %}'>Manage Preferences</a>
                     {% endif %}
                     {% if request.user.is_superuser or not request.user.is_instructor %}
                     <a href=''>Vote for Courses</a>
