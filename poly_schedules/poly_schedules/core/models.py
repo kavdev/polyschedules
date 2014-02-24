@@ -8,7 +8,6 @@
 
 import re
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import BooleanField, PositiveIntegerField
 from django.db.models.fields.related import ManyToManyField
@@ -43,22 +42,25 @@ class PolySchedulesUser(AbstractUser):
         return re.sub(r'-admin', '', self.username)
 
     def initialize_preferences(self):
-        # Initialize course preferences
-        for course in Course.objects.all():
-            course_pref, created = CoursePreference.objects.get_or_create(term=Term().get_or_create_current_term(), course=course)
+        """Initialises course and time preferences for instructors."""
+
+        if self.is_instructor:
+            # Initialize course preferences
+            for course in Course.objects.all():
+                course_pref, created = CoursePreference.objects.get_or_create(term=Term().get_or_create_current_term(), course=course)
+
+                if created:
+                    self.course_preferences.add(course_pref)
+                    self.save()
+
+            # Initialize time preference
+            time_pref, created = TimePreference.objects.get_or_create(term=Term().get_or_create_current_term())
 
             if created:
-                self.course_preferences.add(course_pref)
+                time_pref.availability = Week()
+                time_pref.save()
+                self.time_preference.add(time_pref)
                 self.save()
-
-        # Initialize time preference
-        time_pref, created = TimePreference.objects.get_or_create(term=Term().get_or_create_current_term())
-
-        if created:
-            time_pref.availability = Week()
-            time_pref.save()
-            self.time_preference.add(time_pref)
-            self.save()
 
     class Meta:
         verbose_name = u'PolySchedules User'

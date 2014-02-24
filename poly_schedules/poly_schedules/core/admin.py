@@ -44,4 +44,7 @@ class PolySchedulesUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_instructor', 'is_active_instructor', 'is_superuser')
+    list_filter = ('is_instructor', 'is_active_instructor', 'is_superuser')
+
 admin.site.register(PolySchedulesUser, PolySchedulesUserAdmin)
