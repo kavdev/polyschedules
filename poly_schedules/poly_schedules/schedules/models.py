@@ -66,7 +66,7 @@ class Section(Model):
     associated_lab = ForeignKey('self', null=True, blank=True)
 
     def __unicode__(self):
-        return self.course + " - " + str(self.number)
+        return str(self.course) + " - " + str(self.number)
 
     class Meta:
         unique_together = ("course", "number")
