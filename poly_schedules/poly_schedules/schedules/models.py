@@ -86,7 +86,8 @@ class SectionTime(Model):
         length_hours = length_digits[0]
         length_minutes = (60 * ((length_digits[1] * 10) + length_digits[2])) / 100  # Integer math gets nice minute numbers
 
-        end_time = self.start_time + datetime.timedelta(hours=length_hours, minutes=length_minutes)
+        # A bit of a hack to get time and delta to play together nicely.
+        end_time = (datetime.datetime.combine(datetime.date.today(), self.start_time) + datetime.timedelta(hours=length_hours, minutes=length_minutes)).time()
 
         return self.TIME_PATTERNS[self.time_pattern] + " " + str(self.start_time) + " - " + str(end_time)
 
