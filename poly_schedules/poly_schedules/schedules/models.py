@@ -84,9 +84,9 @@ class SectionTime(Model):
     def __unicode__(self):
         length_digits = self.length.as_tuple().digits
         length_hours = length_digits[0]
-        if length_digits[1] and length_digits[2]:
+        try:
             length_minutes = (60 * ((length_digits[1] * 10) + length_digits[2])) / 100  # Integer math gets nice minute numbers
-        else:
+        except IndexError:
             length_minutes = 0
 
         # A bit of a hack to get time and delta to play together nicely.
