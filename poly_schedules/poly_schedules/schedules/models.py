@@ -35,7 +35,7 @@ class Course(Model):
     lab_time_proximity = PositiveSmallIntegerField(default=0, choices=PROXIMITY_CHOICES)
 
     def __unicode__(self):
-        return self.prefix + " " + str(self.number)
+        return self.prefix + " " + unicode(self.number)
 
     class Meta:
         unique_together = ("prefix", "number")
@@ -66,7 +66,7 @@ class Section(Model):
     associated_lab = ForeignKey('self', null=True, blank=True)
 
     def __unicode__(self):
-        return str(self.course) + " - " + str(self.number).zfill(2)
+        return unicode(self.course) + " - " + unicode(self.number).zfill(2)
 
     class Meta:
         unique_together = ("course", "number")
@@ -92,7 +92,7 @@ class SectionTime(Model):
         # A bit of a hack to get time and delta to play together nicely.
         end_time = (datetime.datetime.combine(datetime.date.today(), self.start_time) + datetime.timedelta(hours=length_hours, minutes=length_minutes)).time()
 
-        return self.TIME_PATTERNS[self.time_pattern] + " " + str(self.start_time) + " - " + str(end_time)
+        return self.TIME_PATTERNS[self.time_pattern] + " " + unicode(self.start_time) + " - " + unicode(end_time)
 
 
 class Week(Model):
@@ -128,7 +128,7 @@ class Term(Model):
     votes_lock_date = DateField()
 
     def __unicode__(self):
-        return self.SEASONS[self.season_index] + " " + str(self.year)
+        return self.SEASONS[self.season_index] + " " + unicode(self.year)
 
     @property
     def preferences_locked(self):

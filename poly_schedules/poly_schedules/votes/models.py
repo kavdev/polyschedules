@@ -18,4 +18,4 @@ class Vote(Model):
     term = ForeignKey(Term)
 
     def __unicode__(self):
-        return str(self.student) + " - " + str(self.course) + " " + str(self.term)
+        return unicode(self.student) + " - " + unicode(self.course) + " " + unicode(self.term)
