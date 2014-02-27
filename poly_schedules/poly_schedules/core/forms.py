@@ -9,7 +9,7 @@
 
 from django.forms import Form, ModelChoiceField
 
-from schedules.models import Term
+from ..schedules.models import Term
 
 
 class TermDropdownForm(Form):
