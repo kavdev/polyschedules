@@ -6,16 +6,49 @@
 
 {% block content %}
 <div class="col-xs-12 column">
-    <div class="row_clearfix">
-        <p>Use the following forms to provide preference information to the scheduling algorithm. Your preferences will be taken into account when generating schedules, but there is no guarantee they won't be overridden.</p>
+    <div class="row_clearfix" align="center">
+        <p class="description">Use the following forms to provide preference information to the scheduling algorithm. Your preferences will be taken into account when generating schedules, but there is no guarantee they won't be overridden.</p>
     </div>
     <div class="row_clearfix">
-        <div class="col-xs-6 column">
-            <span>Time Preference</span>
+        <div class="col-lg-6 column" align="center">
+            <h2>Time Preference</h2>
+            <table border="1" class="time_preference">
+                <tbody>
+                    <tr>
+                        <th scope="col" width="16%"></th>
+                        <th scope="col" width="16%">Monday</th>
+                        <th scope="col" width="16%">Tuesday</th>
+                        <th scope="col" width="16%">Wednesday</th>
+                        <th scope="col" width="16%">Thursday</th>
+                        <th scope="col" width="16%">Friday</th>
+                    </tr>
+                    {% if availability_rows %}
+                        {% for row in availability_rows %}
+                        <tr>
+                            <td>{{ row.time }}</td>
+                            <td class="timeslot" available="{% if row.monday %}true{% else %}false{% endif %}" hour="{{ row.hour }}" day="monday"></td>
+                            <td class="timeslot" available="{% if row.tuesday %}true{% else %}false{% endif %}" hour="{{ row.hour }}" day="tuesday"></td>
+                            <td class="timeslot" available="{% if row.wednesday %}true{% else %}false{% endif %}" hour="{{ row.hour }}" day="wednesday"></td>
+                            <td class="timeslot" available="{% if row.thursday %}true{% else %}false{% endif %}" hour="{{ row.hour }}" day="thursday"></td>
+                            <td class="timeslot" available="{% if row.friday %}true{% else %}false{% endif %}" hour="{{ row.hour }}" day="friday"></td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
-        <div class="col-xs-6 column">
-            <span>Course Preferences</span>
-             <table border="1" class="course_preference">
+        <div class="col-lg-6 column" align="center">
+            <h2>Course Preferences</h2>
+            <table border="1" class="course_preferences">
                 <tbody>
                     <tr>
                         <th scope="col" width="15%">Prefix</th>
@@ -31,12 +64,12 @@
                             <td>
                             {% for radio in preference.preference_form.preference %}
                                 {% if forloop.first %}
-                                <div align="center"><input name="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.name }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }}></div>
+                                <div align="center"><input name="{{ preference.course.id }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="id_{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }} onchange="Dajaxice.poly_schedules.preferences.update_course_preference(Dajax.process, {'course_id': $(this).attr('name'), 'preference': $(this).val()})"></div>
                                 </td>
                                 <td>
                                 <div align="center" class="full_width">
                                 {% else %}
-                                <input name="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.name }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }}>
+                                <input name="{{ preference.course.id }}" type="radio" {% if radio.is_checked %}checked="checked"{% endif %} id="id_{{ preference.course.prefix }}_{{ preference.course.number }}_{{ radio.index }}" value={{ radio.choice_value }} onchange="Dajaxice.poly_schedules.preferences.update_course_preference(Dajax.process, {'course_id': $(this).attr('name'), 'preference': $(this).val()})">
                                 {% endif %}
                             {% endfor %}
                             </td>
@@ -48,6 +81,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     {% endif %}
                 </tbody>
@@ -55,4 +91,24 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block extended_scripts %}
+{{ block.super }}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".timeslot").each(function() {
+            $(this).click(function () {
+                Dajaxice.poly_schedules.preferences.update_time_preference(Dajax.process, {'day': $(this).attr('day'), 'hour': $(this).attr('hour')});
+                val = $(this).attr("available");
+                
+                if (val == "true") {
+                    $(this).attr("available", "false");
+                }
+                else {
+                    $(this).attr("available", "true");
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

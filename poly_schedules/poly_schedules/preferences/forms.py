@@ -9,7 +9,7 @@
 from django.forms import ModelForm
 from django.forms.widgets import RadioSelect
 
-from preferences.models import CoursePreference
+from ..preferences.models import CoursePreference
 
 
 class CoursePreferenceForm(ModelForm):

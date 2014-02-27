@@ -9,7 +9,7 @@
 from django.conf import settings
 from django.db.models import Model, ForeignKey
 
-from schedules.models import Course, Term
+from ..schedules.models import Course, Term
 
 
 class Vote(Model):

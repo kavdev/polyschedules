@@ -10,7 +10,7 @@ from django.db.models import Model
 from django.db.models.fields import PositiveSmallIntegerField, BooleanField
 from django.db.models.fields.related import ForeignKey
 
-from schedules.models import Course, Term, Week
+from ..schedules.models import Course, Term, Week
 
 
 class CoursePreference(Model):

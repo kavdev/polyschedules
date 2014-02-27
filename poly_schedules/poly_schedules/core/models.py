@@ -12,8 +12,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import BooleanField, PositiveIntegerField
 from django.db.models.fields.related import ManyToManyField
 
-from preferences.models import CoursePreference, TimePreference
-from schedules.models import Course, Term, Week
+from ..preferences.models import CoursePreference, TimePreference
+from ..schedules.models import Course, Term, Week
 
 
 class PolySchedulesUser(AbstractUser):
@@ -57,7 +57,9 @@ class PolySchedulesUser(AbstractUser):
             time_pref, created = TimePreference.objects.get_or_create(term=Term().get_or_create_current_term())
 
             if created:
-                time_pref.availability = Week()
+                week = Week()
+                week.save()
+                time_pref.availability = week
                 time_pref.save()
                 self.time_preference.add(time_pref)
                 self.save()
