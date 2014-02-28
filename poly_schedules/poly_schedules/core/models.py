@@ -64,6 +64,9 @@ class PolySchedulesUser(AbstractUser):
                 self.time_preference.add(time_pref)
                 self.save()
 
+    def __unicode__(self):
+        return unicode(self.get_full_name())
+
     class Meta:
         verbose_name = u'PolySchedules User'
         verbose_name_plural = u'PolySchedules Users'

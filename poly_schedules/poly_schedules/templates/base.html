@@ -11,6 +11,7 @@
 
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
         <link href="{{STATIC_URL}}css/base.css" rel="stylesheet" type="text/css" />
+        <link href="{{STATIC_URL}}css/table.css" rel="stylesheet" type="text/css" />
         {% block extended_head %}{% endblock %}
         <title>Poly Schedules{% block subtitle %}{% endblock %}</title>
     </head>
@@ -18,7 +19,7 @@
         <div id="container">
             <div class="row clearfix" id="titlebar">
                 <div class="col-xs-4 column" id="title_left" align="left">
-                    <a href="{% url 'home' %}">Poly Schedules</a>
+                    <a href="{% url 'base_schedule' %}">Poly Schedules</a>
                 </div>
                 <div class="col-xs-4 column" id="title_center" align="center">
                     {{ term_form.as_p }}
@@ -52,11 +53,11 @@
         {% dajaxice_js_import %}
         <script type="text/javascript" src="{{STATIC_URL}}js/jquery.dajax.core.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> -->
         <script type="text/javascript">
             $(function() {
                 /* For zebra striping */
-                $("table tr:nth-child(odd)").addClass("odd-row");
+                $("table tr:nth-child(odd)").addClass("odd");
                 /* For cell text alignment */
                 $("table td:first-child, table th:first-child").addClass("first");
                 /* For removing the last border */
