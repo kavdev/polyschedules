@@ -63,6 +63,7 @@ class Section(Model):
     times = ManyToManyField('SectionTime')
 
     # The associated lab, if it exists
+    is_lab = BooleanField(default=False)
     associated_lab = ForeignKey('self', null=True, blank=True)
 
     def __unicode__(self):

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block extended_scripts %}
+{{ block.super }}
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+    var schedule;
+
+    // initialize the dataTable
+    $(document).ready(function() {      
+        // Initialize the DataTable. See datatables documentation for information about each option
+        schedule = $('#schedule').dataTable( {
+            "aaSorting": [[ 1, "asc" ], [ 2, "asc" ], [ 5, "asc" ]], // Course, Section No., Times
+            "oLanguage": {
+                "sLengthMenu": 'Display <select>'+
+                    '<option value="10">10</option>'+
+                    '<option value="15">15</option>'+
+                    '<option value="25">25</option>'+
+                    '<option value="50">50</option>'+
+                    '<option value="100">100</option>'+
+                    '<option value="-1">All</option>'+
+                    '</select> records:',
+                "sSearch": "Filter sections:",
+                "sZeroRecords": "No sections match the provided parameters."
+            },
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "{{ populate_url }}",
+            "iDisplayLength": 15,
+            "sPaginationType": "full_numbers",
+            "bLengthChange": true,
+            "bAutoWidth": false,
+            "sDom": '<lrf><"clear">t<ip><"clear">',
+            // Custom column rendering
+            "aoColumnDefs": [
+                { "sClass": "width0","bSearchable": false, "bVisible": false, "aTargets": [ 0 ] },
+            ],
+        });
+    });
+</script>
+{% endblock %}
+
+{% block subtitle %} | {{ term }} Schedule{% endblock %}
+
+{% block content %}
+<div class="col-xs-12 column">
+    <div class="row_clearfix" align="center">
+        <table id="schedule">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Course</th>
+                    <th>Section No.</th>
+                    <th>Instructor</th>
+                    <th>Location</th>
+                    <th>Times</th>
+                    <th>Type</th>
+                    <th>Units</th>
+                    <th>WTU</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
