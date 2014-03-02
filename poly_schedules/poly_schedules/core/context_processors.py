@@ -14,6 +14,7 @@ def term_dropdown(request):
 
     extra_context = {}
 
-    extra_context['term_form'] = TermDropdownForm(term_id=request.session['term_id'])
+    if 'term_id' in request.session:
+        extra_context['term_form'] = TermDropdownForm(term_id=request.session['term_id'])
 
     return extra_context
