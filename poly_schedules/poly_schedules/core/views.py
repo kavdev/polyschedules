@@ -25,7 +25,7 @@ class LoginView(FormView):
 
     template_name = 'core/login.html'
     form_class = AuthenticationForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('base_schedule')
 
     @method_decorator(sensitive_post_parameters())
     @method_decorator(csrf_protect)
@@ -50,7 +50,7 @@ def logout(request):
     """Logs the current user out."""
 
     auth_logout(request)
-    redirection = reverse_lazy('home')
+    redirection = reverse_lazy('base_schedule')
     return HttpResponseRedirect(redirection)
 
 
