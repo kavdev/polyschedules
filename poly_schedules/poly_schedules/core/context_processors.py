@@ -7,14 +7,13 @@
 """
 
 from .forms import TermDropdownForm
-from poly_schedules.schedules.models import Term
 
 
 def term_dropdown(request):
     """Adds the term dropdown choices to each context request."""
 
     extra_context = {}
-    extra_context['term'] = Term().get_or_create_current_term()
-    extra_context['term_form'] = TermDropdownForm()
+
+    extra_context['term_form'] = TermDropdownForm(term_id=request.session['term_id'])
 
     return extra_context

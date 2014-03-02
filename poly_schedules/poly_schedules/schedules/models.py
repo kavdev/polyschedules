@@ -109,12 +109,18 @@ class Week(Model):
     saturday = BooleanListField(default=empty_day)
     sunday = BooleanListField(default=empty_day)
 
+    def __unicode__(self):
+        return "Week (%s)" % unicode(self.id)
+
 
 class Schedule(Model):
 
     sections = ManyToManyField(Section, blank=True)
     start_time = TimeField(default=datetime.time(7))
     end_time = TimeField(default=datetime.time(22))
+
+    def __unicode__(self):
+        return "Schedule (%s)" % unicode(self.id)
 
 
 class Term(Model):

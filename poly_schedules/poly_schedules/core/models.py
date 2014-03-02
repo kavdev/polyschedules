@@ -10,10 +10,10 @@ import re
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models.fields import BooleanField, PositiveIntegerField
-from django.db.models.fields.related import ManyToManyField
+from django.db.models.fields.related import ForeignKey, ManyToManyField
 
-from ..preferences.models import CoursePreference, TimePreference
-from ..schedules.models import Course, Term, Week
+from ..preferences.models import CoursePreference, TimePreference, TermPreferenceLock
+from ..schedules.models import Course, Week, Term
 
 
 class PolySchedulesUser(AbstractUser):
@@ -23,6 +23,7 @@ class PolySchedulesUser(AbstractUser):
     max_wtu = PositiveIntegerField(default=8)
     course_preferences = ManyToManyField(CoursePreference, blank=True)
     time_preference = ManyToManyField(TimePreference, blank=True)
+    preference_locks = ManyToManyField(TermPreferenceLock, blank=True)
     is_active_instructor = BooleanField(default=True)
 
     #
@@ -41,20 +42,30 @@ class PolySchedulesUser(AbstractUser):
 
         return re.sub(r'-admin', '', self.username)
 
-    def initialize_preferences(self):
+    def initialize_preferences(self, term_id):
         """Initialises course and time preferences for instructors."""
 
         if self.is_instructor:
+            term = Term.objects.get(id=term_id)
+
+            # Initialize term lock
+            term_preference_lock, created = TermPreferenceLock.objects.select_related().get_or_create(term=term)
+
+            if created:
+                term_preference_lock.save()
+                self.preference_locks.add(term_preference_lock)
+                self.save()
+
             # Initialize course preferences
             for course in Course.objects.all():
-                course_pref, created = CoursePreference.objects.get_or_create(term=Term().get_or_create_current_term(), course=course)
+                course_pref, created = CoursePreference.objects.select_related().get_or_create(term=term, course=course)
 
                 if created:
                     self.course_preferences.add(course_pref)
                     self.save()
 
             # Initialize time preference
-            time_pref, created = TimePreference.objects.get_or_create(term=Term().get_or_create_current_term())
+            time_pref, created = TimePreference.objects.select_related().get_or_create(term=term)
 
             if created:
                 week = Week()

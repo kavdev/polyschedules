@@ -1,6 +1,6 @@
 """
-.. module:: resnet_internal.portmap.views
-   :synopsis: ResNet Internal Residence Halls Port Map Views.
+.. module:: poly_schedules.schedules.views
+   :synopsis: Poly Schedules Schedule Views.
 
 .. moduleauthor:: Alex Kavanaugh <kavanaugh.development@outlook.com>
 
@@ -12,10 +12,11 @@ from django.views.generic import TemplateView
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-from .models import Term, SectionTime
+from .models import Term, Section, SectionTime
 
 
 class BaseScheduleView(TemplateView):
+
     template_name = "schedules/schedule.html"
 
     def get_context_data(self, **kwargs):
@@ -25,11 +26,43 @@ class BaseScheduleView(TemplateView):
         return context
 
 
+class CourseScheduleView(BaseScheduleView):
+
+    def get_context_data(self, **kwargs):
+        context = super(CourseScheduleView, self).get_context_data(**kwargs)
+        context["populate_url"] = reverse("populate_course_schedule", kwargs=kwargs)
+
+        return context
+
+
+class LocationScheduleView(BaseScheduleView):
+
+    def get_context_data(self, **kwargs):
+        context = super(LocationScheduleView, self).get_context_data(**kwargs)
+        context["populate_url"] = reverse("populate_location_schedule", kwargs=kwargs)
+
+        return context
+
+
+class InstructorScheduleView(BaseScheduleView):
+
+    def get_context_data(self, **kwargs):
+        context = super(InstructorScheduleView, self).get_context_data(**kwargs)
+        context["populate_url"] = reverse("populate_instructor_schedule", kwargs=kwargs)
+
+        return context
+
+
 class PopulateBaseSchedule(BaseDatatableView):
     """Renders the schedule."""
 
     def get_initial_queryset(self):
-        return Term().get_or_create_current_term().schedule.sections.all().select_related()
+        term = Term.objects.get(id=self.request.session['term_id'])
+
+        if not term.schedule:
+            return Section.objects.none()
+
+        return term.schedule.sections.all().select_related()
 
     # define the columns that will be returned
     columns = ['id', 'course', 'number', 'instructor', 'location', 'times', 'is_lab', 'course.units', 'course.wtu']
@@ -70,8 +103,17 @@ class PopulateBaseSchedule(BaseDatatableView):
 
         if column == 'times':
             return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "\n".join([str(time) for time in getattr(row, column).all()]))
-        if column == 'is_lab':
+        elif column == 'is_lab':
             return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "Lab" if getattr(row, column) else "Lec")
+        elif column == 'course':
+            course = getattr(row, column)
+            return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('course_schedule', kwargs={'prefix': course.prefix, 'course_number': course.number}), text)
+        elif column == 'location':
+            location = getattr(row, column)
+            return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('location_schedule', kwargs={'building_number': location.building_number, 'room_number': location.room_number}), text)
+        elif column == 'instructor':
+            instructor = getattr(row, column)
+            return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('instructor_schedule', kwargs={'username': instructor.username}), text)
         else:
             return "<div id='%s' column='%s'>%s</div>" % (row.id, column, text)
 
@@ -125,3 +167,39 @@ class PopulateBaseSchedule(BaseDatatableView):
             qs = qs.filter(paramQ)
 
         return qs
+
+
+class PopulateCourseSchedule(PopulateBaseSchedule):
+    """Renders the schedule, filtered by course."""
+
+    def get_initial_queryset(self):
+        term = Term.objects.get(id=self.request.session['term_id'])
+
+        if not term.schedule:
+            return Section.objects.none()
+
+        return term.schedule.sections.filter(course__prefix=self.kwargs['prefix'], course__number=self.kwargs['course_number']).select_related()
+
+
+class PopulateLocationSchedule(PopulateBaseSchedule):
+    """Renders the schedule, filtered by location."""
+
+    def get_initial_queryset(self):
+        term = Term.objects.get(id=self.request.session['term_id'])
+
+        if not term.schedule:
+            return Section.objects.none()
+
+        return term.schedule.sections.filter(location__building_number=self.kwargs['building_number'], location__room_number=self.kwargs['room_number']).select_related()
+
+
+class PopulateInstructorSchedule(PopulateBaseSchedule):
+    """Renders the schedule, filtered by instructor."""
+
+    def get_initial_queryset(self):
+        term = Term.objects.get(id=self.request.session['term_id'])
+
+        if not term.schedule:
+            return Section.objects.none()
+
+        return term.schedule.sections.filter(instructor__username=self.kwargs['username']).select_related()

@@ -9,8 +9,6 @@
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 
-from ..schedules.models import Term
-
 
 @dajaxice_register
 def update_course_preference(request, course_id, preference):
@@ -26,7 +24,7 @@ def update_course_preference(request, course_id, preference):
     dajax = Dajax()
 
     # Get the preference in question
-    preference_instance = request.user.course_preferences.get(term=Term().get_or_create_current_term(), course=course_id)
+    preference_instance = request.user.course_preferences.select_related().get(term__id=request.session['term_id'], course=course_id)
     preference_instance.preference = int(preference)
     preference_instance.save()
 
@@ -46,8 +44,7 @@ def update_time_preference(request, day, hour):
 
     dajax = Dajax()
 
-    current_term = Term().get_or_create_current_term()
-    availability = request.user.time_preference.get(term=current_term).availability
+    availability = request.user.time_preference.select_related().get(term__id=request.session['term_id']).availability
 
     # Modify the hours list
     hour = int(hour)

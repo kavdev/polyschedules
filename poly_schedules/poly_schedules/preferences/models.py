@@ -21,7 +21,9 @@ class CoursePreference(Model):
     term = ForeignKey(Term)
     course = ForeignKey(Course)
     preference = PositiveSmallIntegerField(default=0, verbose_name='', choices=PREFERENCE_CHOICES)
-    locked = BooleanField(default=False)
+
+    def __unicode__(self):
+        return "Course Preference (%s)" % unicode(self.id)
 
 
 class TimePreference(Model):
@@ -29,4 +31,16 @@ class TimePreference(Model):
 
     term = ForeignKey(Term)
     availability = ForeignKey(Week, null=True, blank=True)
+
+    def __unicode__(self):
+        return "Time Preference (%s)" % unicode(self.id)
+
+
+class TermPreferenceLock(Model):
+    """Boolean container for whether or not an instructor's preferences have been manually locked."""
+
+    term = ForeignKey(Term)
     locked = BooleanField(default=False)
+
+    def __unicode__(self):
+        return "Term Preference Lock (%s)" % unicode(self.id)

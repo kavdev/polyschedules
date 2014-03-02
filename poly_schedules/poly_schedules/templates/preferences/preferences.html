@@ -4,10 +4,34 @@
  | Instructor Preferences
 {% endblock %}
 
+{% block extended_head %}
+{% if preferences_locked or manual_preference_lock %}
+<style type="text/css">
+.timeslot:hover {
+    background: rgb(200, 200, 200) !important;
+}
+
+.timeslot:hover, .timeslot[available="true"] {
+    cursor: default;
+    background: gray !important;
+}
+
+table td {
+    background: rgb(200, 200, 200) !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="col-xs-12 column">
     <div class="row_clearfix" align="center">
         <p class="description">Use the following forms to provide preference information to the scheduling algorithm. Your preferences will be taken into account when generating schedules, but there is no guarantee they won't be overridden.</p>
+        {% if not manual_preference_lock %}
+        <p><b>Preferences for this term {% if preferences_locked %}were locked{% else %}will be locked{% endif %} on {{ preferences_lock_date }}</b></p>
+        {% else %}
+        <p><b>Your preferences for this term have been locked by an administrator.</b></p>
+        {% endif %}
     </div>
     <div class="row_clearfix">
         <div class="col-lg-6 column" align="center">
@@ -96,6 +120,7 @@
 {{ block.super }}
 <script type="text/javascript">
     $(document).ready(function() {
+        {% if not preferences_locked %}
         $(".timeslot").each(function() {
             $(this).click(function () {
                 Dajaxice.poly_schedules.preferences.update_time_preference(Dajax.process, {'day': $(this).attr('day'), 'hour': $(this).attr('hour')});
@@ -109,6 +134,12 @@
                 }
             });
         });
+        {% endif %}
+        
+        {% if preferences_locked or manual_preference_lock %}
+        $("input[type=radio]").prop("disabled", "true");
+        {% endif %}
+        
     });
 </script>
 {% endblock %}
