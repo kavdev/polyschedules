@@ -59,7 +59,7 @@ class PreferencesView(TemplateView):
 
         # Build a list of courses
         for course in Course.objects.all():
-            preference = CoursePreference.objects.select_related().get(term=term, course=course)
+            preference = self.request.user.course_preferences.select_related().get(term=term, course=course)
 
             list_object = {}
             list_object['course'] = course

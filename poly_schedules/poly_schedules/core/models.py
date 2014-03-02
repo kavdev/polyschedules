@@ -49,7 +49,7 @@ class PolySchedulesUser(AbstractUser):
             term = Term.objects.get(id=term_id)
 
             # Initialize term lock
-            term_preference_lock, created = TermPreferenceLock.objects.select_related().get_or_create(term=term)
+            term_preference_lock, created = self.preference_locks.select_related().get_or_create(term=term, instructor=self)
 
             if created:
                 term_preference_lock.save()
@@ -58,14 +58,14 @@ class PolySchedulesUser(AbstractUser):
 
             # Initialize course preferences
             for course in Course.objects.all():
-                course_pref, created = CoursePreference.objects.select_related().get_or_create(term=term, course=course)
+                course_pref, created = self.course_preferences.select_related().get_or_create(term=term, instructor=self, course=course)
 
                 if created:
                     self.course_preferences.add(course_pref)
                     self.save()
 
             # Initialize time preference
-            time_pref, created = TimePreference.objects.select_related().get_or_create(term=term)
+            time_pref, created = self.time_preference.select_related().get_or_create(term=term, instructor=self)
 
             if created:
                 week = Week()
