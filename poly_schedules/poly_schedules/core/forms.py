@@ -16,10 +16,7 @@ class TermDropdownForm(Form):
 
     term = ModelChoiceField(queryset=Term.objects.all(), label='', empty_label=None)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, term_id, *args, **kwargs):
         super(TermDropdownForm, self).__init__(*args, **kwargs)
 
-        term_instance = Term()
-
-        term = term_instance.get_or_create_current_term()
-        self.fields["term"].initial = term.id
+        self.fields["term"].initial = term_id

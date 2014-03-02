@@ -39,7 +39,7 @@
                     <a href='{% url 'preferences' %}'>Manage Preferences</a>
                     {% endif %}
                     {% if request.user.is_superuser or not request.user.is_instructor %}
-                    <a href=''>Vote for Courses</a>
+                    <a href='{% url 'votes' %}'>Vote for Courses</a>
                     {% endif %}
                 </div>
             </div>
@@ -62,6 +62,11 @@
                 $("table td:first-child, table th:first-child").addClass("first");
                 /* For removing the last border */
                 $("table td:last-child, table th:last-child").addClass("last");
+            });
+            $(document).ready(function() {
+                $("#id_term").change(function () {
+                    Dajaxice.poly_schedules.core.update_selected_term(Dajax.process, {'term_id': $(this).val(), 'location': location.href});
+                });
             });
         </script>
         {% block extended_scripts %}{% endblock %}

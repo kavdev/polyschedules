@@ -26,19 +26,23 @@ class PreferencesView(TemplateView):
 
     def get(self, *args, **kwargs):
         # Create user preferences if they don't exist.
-        self.request.user.initialize_preferences()
+        self.request.user.initialize_preferences(self.request.session['term_id'])
 
         return super(PreferencesView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(PreferencesView, self).get_context_data(**kwargs)
 
+        term = Term.objects.get(id=self.request.session['term_id'])
+
+        context['preferences_lock_date'] = term.preferences_lock_date
+        context['preferences_locked'] = term.preferences_locked
+        context['manual_preference_lock'] = self.request.user.preference_locks.select_related().get(term=term).locked
+
         availability_rows = []
         course_preference_list = []
 
-        current_term = Term().get_or_create_current_term()
-
-        availability = self.request.user.time_preference.get(term=current_term).availability
+        availability = self.request.user.time_preference.select_related().get(term=term).availability
 
         # Build availability rows
         for hour in xrange(24):
@@ -55,7 +59,7 @@ class PreferencesView(TemplateView):
 
         # Build a list of courses
         for course in Course.objects.all():
-            preference = CoursePreference.objects.get(term=Term().get_or_create_current_term(), course=course)
+            preference = CoursePreference.objects.select_related().get(term=term, course=course)
 
             list_object = {}
             list_object['course'] = course

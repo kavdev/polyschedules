@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}
+ | Course Votes
+{% endblock %}
+
+{% block content %}
+<div class="col-xs-12 column">
+    <div class="row_clearfix" align="center">
+        <p class="description">Use the following form to vote for up to {{ max_votes }} courses you wish to be enrolled in for this term. Your votes will provide valuable input used during schedule generation.</p>
+        <p><b>The voting window for this term {% if votes_locked %}closed{% else %}will close{% endif %} on {{ votes_lock_date }}</b></p>
+    </div>
+    <div class="row_clearfix" align="center">
+        <form method="post" action="{% url 'votes' %}" id="vote_formset">
+            <fieldset>
+                {{ formset }}
+            </fieldset>
+            {% if not votes_locked %}
+            <br />
+            <br />
+            <p>
+                <input type="submit" value="Update Votes" />
+            </p>
+            {% csrf_token %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extended_scripts %}
+{{ block.super }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("fieldset input[type=checkbox]").after("<br />");
+        {% if votes_locked %}
+            $("fieldset select").prop('disabled', true);
+            $("fieldset input[type=checkbox]").prop('disabled', true);
+        {% endif %}
+    });
+</script>
+{% endblock %}
