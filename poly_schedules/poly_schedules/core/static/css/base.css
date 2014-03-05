@@ -20,6 +20,7 @@ html, body {
     color: white;
     font-size: 26px;
     font-family: 'Lobster Two', cursive;
+    font-style: italic;
 }
 
 #title_center select {

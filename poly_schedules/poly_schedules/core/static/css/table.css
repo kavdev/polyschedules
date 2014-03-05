@@ -270,30 +270,30 @@ th:active {
  * Sorting classes for columns
  */
 /* For the standard odd/even */
-tr.odd td.sorting_1 {
+tr.even td.sorting_1 {
     background-color: #e7e7e7;
 }
-tr.odd td.sorting_2 {
+tr.even td.sorting_2 {
     background-color: #e7e7e7;
 }
-tr.odd td.sorting_3 {
+tr.even td.sorting_3 {
     background-color: #e7e7e7;
 }
 
-tr.even td.sorting_1 {
+tr.odd td.sorting_1 {
     background-color: #dbdbdb;
 }
-tr.even td.sorting_2 {
+tr.odd td.sorting_2 {
     background-color: #dbdbdb;
 }
-tr.even td.sorting_3 {
+tr.odd td.sorting_3 {
     background-color: #dbdbdb;
 }
 
 /*
  * Custom Row Highlighting
  *
- */
+ *
 
 table.dataTable tr:hover {
     background-color: #86BC7D;
@@ -301,4 +301,4 @@ table.dataTable tr:hover {
 
 tr:hover td.sorting_1, tr:hover td.sorting_2, tr:hover td.sorting_3 {
     background-color: #86BC7D;
-}
+}*/
