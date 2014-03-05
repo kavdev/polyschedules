@@ -45,7 +45,7 @@ class PolySchedulesUser(AbstractUser):
     def initialize_preferences(self, term_id):
         """Initialises course and time preferences for instructors."""
 
-        if self.is_instructor:
+        if self.is_instructor or self.is_superuser:
             term = Term.objects.get(id=term_id)
 
             # Initialize term lock
