@@ -110,7 +110,11 @@ class PopulateBaseSchedule(BaseDatatableView):
             return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('course_schedule', kwargs={'prefix': course.prefix, 'course_number': course.number}), text)
         elif column == 'location':
             location = getattr(row, column)
-            return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('location_schedule', kwargs={'building_number': location.building_number, 'room_number': location.room_number}), text)
+
+            if location:
+                return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('location_schedule', kwargs={'building_number': location.building_number, 'room_number': location.room_number}), text)
+            else:
+                return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "TBD")
         elif column == 'instructor':
             instructor = getattr(row, column)
 
