@@ -58,9 +58,9 @@ class Location(Model):
 class Section(Model):
     course = ForeignKey(Course)
     number = PositiveSmallIntegerField()
-    instructor = ForeignKey(settings.AUTH_USER_MODEL)
+    instructor = ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     location = ForeignKey(Location)
-    times = ManyToManyField('SectionTime')
+    times = ManyToManyField('SectionTime', blank=True)
 
     # The associated lab, if it exists
     is_lab = BooleanField(default=False)

@@ -102,7 +102,7 @@ class PopulateBaseSchedule(BaseDatatableView):
             text = obj
 
         if column == 'times':
-            return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "\n".join([str(time) for time in getattr(row, column).all()]))
+            return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "\n".join([str(time) for time in getattr(row, column).all()]) if getattr(row, column).all() else "TBD")
         elif column == 'is_lab':
             return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "Lab" if getattr(row, column) else "Lec")
         elif column == 'course':
@@ -113,7 +113,11 @@ class PopulateBaseSchedule(BaseDatatableView):
             return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('location_schedule', kwargs={'building_number': location.building_number, 'room_number': location.room_number}), text)
         elif column == 'instructor':
             instructor = getattr(row, column)
-            return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('instructor_schedule', kwargs={'username': instructor.username}), text)
+
+            if instructor:
+                return "<div id='%s' column='%s'><a href='%s' target='_blank'>%s</a></div>" % (row.id, column, reverse('instructor_schedule', kwargs={'username': instructor.username}), text)
+            else:
+                return "<div id='%s' column='%s'>%s</div>" % (row.id, column, "STAFF")
         else:
             return "<div id='%s' column='%s'>%s</div>" % (row.id, column, text)
 
