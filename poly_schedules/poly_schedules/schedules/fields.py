@@ -31,9 +31,6 @@ class BooleanListField(TextField):
 
         return unicode(''.join(map(str, map(int, value))))
 
-    def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
-        return self.get_db_prep_value(value)
 
 # Lets South know that this custom field is okay
 from south.modelsinspector import add_introspection_rules
