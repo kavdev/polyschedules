@@ -6,8 +6,6 @@
 
 """
 
-import ldap
-
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout

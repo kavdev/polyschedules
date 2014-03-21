@@ -29,7 +29,7 @@ class Course(Model):
     requires_equipment = BooleanField(default=False)
 
     # Lab Fields
-    has_lab = BooleanField()
+    has_lab = BooleanField(default=False)
     lab_requires_equipment = BooleanField(default=False)
     lab_length = DecimalField(max_digits=3, decimal_places=2, default=0, verbose_name='Lab Length (Hours)')
     lab_time_proximity = PositiveSmallIntegerField(default=0, choices=PROXIMITY_CHOICES)
