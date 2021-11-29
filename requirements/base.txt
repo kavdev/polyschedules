@@ -13,5 +13,5 @@ django-datatables-view==1.7
 django-extra-views==0.6.4
 
 # Manual Install
-python-ldap==2.4.13
+python-ldap==3.4.0
 mysql-python==1.2.5
